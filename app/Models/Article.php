@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ArticleRevertRevisionService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,11 +15,25 @@ class Article extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'body'];
+    protected $fillable = ['article_id', 'user_id', 'title', 'description', 'body'];
 
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($article){
+            (new ArticleRevertRevisionService())->storeRevision($article);
+        });
+    }
+
+    public function revisions(): HasMany
+    {
+        return $this->hasMany(ArticleRevision::class, 'article_id');
     }
 
     public function user(): BelongsTo
@@ -66,4 +81,14 @@ class Article extends Model
 
         $this->attributes['slug'] = Str::slug($title);
     }
+
+    // protected static function createArticleRevision($article) {
+    //     $article->revisions()->create([
+    //         'article_id' => $article->id,
+    //         'title' => $article->title,
+    //         'description' => $article->description,
+    //         'body' => $article->body,
+    //         'user_id' => auth()->id()
+    //     ]);
+    // }
 }

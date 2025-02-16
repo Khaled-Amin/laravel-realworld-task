@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleRevertRevisionController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -22,7 +23,7 @@ Route::prefix('articles')->group(function () {
     Route::get('{article}', [ArticleController::class, 'show']);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'show']);
         Route::put('/', [UserController::class, 'update']);
@@ -41,6 +42,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('{article}/favorite', [ArticleController::class, 'unfavorite']);
     });
 
+    Route::prefix('articles')->group(function () {
+        Route::get('{id}/revisions', [ArticleRevertRevisionController::class, 'index']);
+        Route::get('{id}/revisions/{revision_id}', [ArticleRevertRevisionController::class, 'show']);
+        Route::put('{id}/revisions/{revision_id}/revert', [ArticleRevertRevisionController::class, 'revert']);
+        
+    });
+    
     Route::prefix('articles')->group(function () {
         Route::post('{article}/comments', [CommentController::class, 'store']);
         Route::delete('{article}/comments/{comment}', [CommentController::class, 'destroy']);

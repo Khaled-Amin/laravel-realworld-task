@@ -10,7 +10,7 @@ class CreateArticleTagPivotTable extends Migration
 {
     public function up()
     {
-        Schema::create('article_tag', function (Blueprint $table) {
+        Schema::create('article_tag_pivot', function (Blueprint $table) {
             $table->foreignIdFor(Article::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Tag::class)->constrained()->onDelete('cascade');
 
