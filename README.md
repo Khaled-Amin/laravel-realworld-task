@@ -1,37 +1,101 @@
-### Laravel implementation of RealWorld app
+# Backend Documentation 
 
-This Laravel app is part of the [RealWorld](https://github.com/gothinkster/realworld) project and implementation of the [Laravel best practices](https://github.com/alexeymezenin/laravel-best-practices).
+## 📚 Documentation
 
-You might also check [Ruby on Rails version](https://github.com/alexeymezenin/ruby-on-rails-realworld-example-app) of this app.
+This documentation will guide you through setting up and running the updated backend after upgrading Laravel from version 8 to 9, and then from 9 to 10. It also explains the article revision feature implemented in the backend.
 
-See how the exact same Medium.com clone (called [Conduit](https://demo.realworld.io)) is built using different [frontends](https://codebase.show/projects/realworld?category=frontend) and [backends](https://codebase.show/projects/realworld?category=backend). Yes, you can mix and match them, because **they all adhere to the same [API spec](https://gothinkster.github.io/realworld/docs/specs/backend-specs/introduction)**
+---
 
-### How to run the API
+## 📌 1. Setting Up and Running the Upgraded Backend
 
-Make sure you have PHP and Composer installed globally on your computer.
 
-Clone the repo and enter the project folder
+### 🚀 Requirements
 
+- **PHP 8.1 or higher**
+- **Composer** (for PHP dependency management)
+- **Sqlite** (for database)
+- **Node.js** (for front-end dependency management)
+
+### 📥 Installation Steps
+1. **Clone the Repository**
+    ```bash
+    git clone https://github.com/Khaled-Amin/laravel-realworld-task.git
+    cd laravel-realworld-task
+    ```
+    *Navigate to the Project Directory**
+    ```bash
+    cd laravel-realworld-task
+    ```
+    *Install PHP Dependencies**
+    ```bash
+    composer install
+    ```
+    *Install Node.js Dependencies**
+    ```bash
+    npm install
+    ```
+    *Set up the environment:**
+    ```bash
+    cp .env.example .env
+    ```
+    *Generate an application key:**
+    ```bash
+    php artisan key:generate
+    ```
+    *Run the database migrations:**
+    ```bash
+    php artisan migrate
+    ```
+    *Start the development
+    ```bash
+    php artisan serve
+    ```
+📌 2. Article Revision Feature
+    The article revision feature allows for tracking changes made to articles. When an article is updated, a new revision is created instead of directly modifying the article. Each revision stores the article’s previous state, including:
+    - Title
+    - Description
+    - Body
+    - User who made the Change (user_id)
+    - Creation date
+    🔄 Reverting to a Specific Revision
+    To revert to a specific revision, you can use the following command:
+    ```bash
+    put /api/articles/{id}/revisions/{revision_id}/revert
+    ```
+    This will revert the article to the state of the specified revision.
+    
+    🎯 Assumptions and Design Decisions :)
+    - Automatic Create of Revisions: Each time an article is updated, a revision is automatically created. No manual    intervention is needed.
+    - Article Restoration: Any user with the necessary permissions (e.g., article author or admin) can revert an article to a previous revision.
+    - No Deletion of Revisions: Revisions are not deleted. They are preserved for tracking and audit purposes.
+    - Revision Storage: Each revision stores:
+        *Article title
+        *Article description
+        *Article body
+        *The user who made the update (user_id)
+        * created and updated (Timestamps)
+
+## 📌 5. Automated Tests for Revert Revision Feature
+The backend includes automated tests to ensure the correct functionality of the revert revision feature. These tests cover various scenarios and edge cases to ensure the feature works as expected.
+### 📋 Test Scenarios
+### Key Point for exec test:
+Mentions where the tests are located (`tests/Feature/ArticleRevisionTest.php`).
+
+- **Revert to a Specific Revision:** Test the ability to revert an article to a specific revision.
+- **List of Revisions:** Verify that the list of revisions for an article is correctly displayed.
+- **Display Revision Details:** Ensure that the details of a specific revision are displayed correctly.
+- **Ensure Proper Authorization:** Test that only authorized users (e.g., article authors or admins) can revert articles.
+
+## 📌 6. Running Tests
+To run the automated tests, use the following command:
+```bash
+php artisan test
 ```
-git clone https://github.com/alexeymezenin/laravel-realworld-example-app.git
-cd laravel-realworld-example-app
-```
 
-Install the app
+## 📌 7. Conclusion
+The updated backend provides a robust and efficient solution for managing articles, revisions, and user authentication. The article revision feature allows for tracking changes and reverting to previous states. The automated tests ensure the correct functionality of the revert revision feature.
+---
 
-```
-composer install
-cp .env.example .env
-```
 
-Run the web server
 
-```
-php artisan serve
-```
 
-That's it. Now you can use the api, i.e.
-
-```
-http://127.0.0.1:8000/api/articles
-```
