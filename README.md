@@ -50,7 +50,7 @@ This documentation will guide you through setting up and running the updated bac
     ```bash
     php artisan serve
     ```
-📌 2. Article Revision Feature
+ 2. Article Revision Feature
     The article revision feature allows for tracking changes made to articles. When an article is updated, a new revision is created instead of directly modifying the article. Each revision stores the article’s previous state, including:
     - Title
     - Description
